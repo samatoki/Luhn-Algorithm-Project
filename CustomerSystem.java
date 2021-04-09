@@ -23,8 +23,8 @@ public class CustomerSystem {
             userInput = reader.nextLine();                  // User selection from the menu
 
             if (userInput.equals(enterCustomerOption)){
-                String generalInfo = "blank";   //initialize the variable
-                System.out.println("Dear Customer, the personal information you entered is: " + enterCustomerInfo(generalInfo));
+                System.out.println("Dear Customer, the personal information you entered is: " + enterCustomerInfo());
+                System.out.println();
             }
             else if (userInput.equals(generateCustomerOption)) {
                 // Only the line below may be editted based on the parameter list and how you design the method return
@@ -33,9 +33,8 @@ public class CustomerSystem {
             else{
                 System.out.println("Please type in a valid option (A number from 1-9)");
             }
-
         } while (!userInput.equals(exitCondition));         // Exits once the user types 
-        
+
         reader.close();
         System.out.println("Program Terminated");
     }
@@ -56,10 +55,10 @@ public class CustomerSystem {
      * @param generalInfo - string value to store customer info
      * @return - a string composed of customer's name, city, postal code & credit card number
      * */
-    public static String enterCustomerInfo(String generalInfo) {
+    public static String enterCustomerInfo() {
         Scanner readCustomerInfo = new Scanner(System.in);
         String firstName, lastName, city;
-        String postalCode = "blank", creditCardNum = "blank";  // initialize the variables
+        String postal = "blank", creditCardNum = "blank";  // initialize the variables
 
         // name input
         System.out.print("First Name: ");
@@ -74,37 +73,32 @@ public class CustomerSystem {
         System.out.print("City: ");
         city = readCustomerInfo.nextLine();
         System.out.println();
-
-/*      // input postal code & check for validity
-        boolean PCValidityCheck;
-        while(PCValidityCheck = true){
-            System.out.print("Postal Code: ");
-            postalCode = readCustomerInfo.nextLine();
-            System.out.println();
-            validatePostalCode();
-        }
+/*
+        // input postal code & check for the validity
+        System.out.print("Postal Code: ");
+        postal = readCustomerInfo.nextLine();
+        validatePostalCode();
+        System.out.println();
 */
         // input credit card number & check for validity
-        boolean CCValidity;
-        while(CCValidity = true){
+        boolean Validity = true;
+        while(Validity == true){
             System.out.print("Credit Card Number: ");
             creditCardNum = readCustomerInfo.nextLine();
+            
             if(creditCardNum.length()<9){
                 System.out.println("Invalid credit card number. Must be at least 9 characters in length. Please try again.");
-                CCValidity = true;
+                System.out.println();
+                Validity = true;
             }
             else{
-                CCValidity = validateCreditCard(creditCardNum);
-                break;
+                Validity = validateCreditCard(creditCardNum);
             }
         }
 
         // synthesize the individual information
         String space = " ";
-        generalInfo = firstName + space + lastName + space + city + space + postalCode + space + creditCardNum;
-        
-
-        readCustomerInfo.close();
+        String generalInfo = firstName + space + lastName + space + city + space + postal + space + creditCardNum;
         return generalInfo;
     }
 
@@ -152,20 +146,22 @@ public class CustomerSystem {
             }
         }
 
-        // add sum1 and sum2 to check the validity of the original number
+        // add sum1 and sum2 to check the validity of the original credit card number
         int sum = sum1 + sum2;
         String CCValidityKey = String.valueOf(sum); 
         int keyLen = CCValidityKey.length();
         int key = Character.getNumericValue(CCValidityKey.charAt(keyLen-1));
 
-        // to check if the sum ends in zero
+        // check if the sum ends in zero
         if (key != 0){
             System.out.println("Invalid credit card number. Please try again.");
+            System.out.println();
             return true;
         }
         else{
             System.out.println();
             System.out.println("Please wait for the system to upload your personal information.");
+            System.out.println();
             return false;
         }
     }
