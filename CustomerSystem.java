@@ -1,6 +1,6 @@
 /*
  * Date: Apr 2, 2021
- * Name: Yuyang Liu, Carter Li
+ * Name: Yuyang Liu
  * Teacher: Mr. Ho
  * Description: To setup the customer information and sales analysis system for a retail company
 */
@@ -23,8 +23,8 @@ public class CustomerSystem {
             userInput = reader.nextLine();                  // User selection from the menu
 
             if (userInput.equals(enterCustomerOption)){
-                String generalInfo = "blank";
-                System.out.println(enterCustomerInfo(generalInfo));
+                String generalInfo = "blank";   //initialize the variable
+                System.out.println("Dear Customer, the personal information you entered is: " + enterCustomerInfo(generalInfo));
             }
             else if (userInput.equals(generateCustomerOption)) {
                 // Only the line below may be editted based on the parameter list and how you design the method return
@@ -51,15 +51,17 @@ public class CustomerSystem {
     }
 
     /*
-     * Description: stores customers information into the system
+     * Description: Prompt the user to enter valid personal information
      * 
-     * @param generalInfo
-    */
+     * @param generalInfo - string value to store customer info
+     * @return - a string composed of customer's name, city, postal code & credit card number
+     * */
     public static String enterCustomerInfo(String generalInfo) {
         Scanner readCustomerInfo = new Scanner(System.in);
         String firstName, lastName, city;
         String postalCode = "blank", creditCardNum = "blank";  // initialize the variables
 
+        // name input
         System.out.print("First Name: ");
         firstName = readCustomerInfo.nextLine();
         System.out.println();
@@ -68,11 +70,13 @@ public class CustomerSystem {
         lastName = readCustomerInfo.nextLine();
         System.out.println();
 
+        // location input
         System.out.print("City: ");
         city = readCustomerInfo.nextLine();
         System.out.println();
-/*
-        boolean PCValidityCheck = true;
+
+/*      // input postal code & check for validity
+        boolean PCValidityCheck;
         while(PCValidityCheck = true){
             System.out.print("Postal Code: ");
             postalCode = readCustomerInfo.nextLine();
@@ -80,17 +84,25 @@ public class CustomerSystem {
             validatePostalCode();
         }
 */
-
-        boolean reinputRequir = true;
-        while(reinputRequir = true){
+        // input credit card number & check for validity
+        boolean CCValidity;
+        while(CCValidity = true){
             System.out.print("Credit Card Number: ");
             creditCardNum = readCustomerInfo.nextLine();
-            System.out.println();
-            validateCreditCard(creditCardNum, reinputRequir);
+            if(creditCardNum.length()<9){
+                System.out.println("Invalid credit card number. Must be at least 9 characters in length. Please try again.");
+                CCValidity = true;
+            }
+            else{
+                CCValidity = validateCreditCard(creditCardNum);
+                break;
+            }
         }
 
+        // synthesize the individual information
         String space = " ";
         generalInfo = firstName + space + lastName + space + city + space + postalCode + space + creditCardNum;
+        
 
         readCustomerInfo.close();
         return generalInfo;
@@ -100,101 +112,64 @@ public class CustomerSystem {
 
     }
 
-    public static void validateCreditCard(String creditCardNum, boolean reinputRequir){
-        boolean invalidInput = false;
+    /*
+     * Description: Check the validity of customers' credit card (Luhn Algorithm Test)
+     * 
+     * @param creditCardNum - a string that stores the customer's credit card number
+     * @return - a boolean that indicates the validity
+     * */
+    public static boolean validateCreditCard(String creditCardNum){
         int len = creditCardNum.length();
 
         // reverse the order of the digits
-        String reversedCardNum = reverseDigits(creditCardNum);
+        String reversedNum = String.valueOf(creditCardNum.charAt(len-1));
+        for (int i = (len - 2); i >= 0; i--){
+            reversedNum += String.valueOf(creditCardNum.charAt(i));
+        }
 
         // sum odd digits
-        String sum1 = reversedCardNum;
-        sum1 = sumOdd(sum1);
+        int sum1 = 0;
 
         // double and sum the even digits
-        String sum2 = reversedCardNum;
-        sum2 = sumEven(sum2);
+        int sum2 = 0;
 
-        // add sum1 and sum2 to check the validity of the original number
-        int sum = Integer.parseInt(sum1) + Integer.parseInt(sum2);
-        String CCValidityKey = String.valueOf(sum);
-        int keyLen = CCValidityKey.length();
-
-
-        do{
-            if(len < 9){
-                System.out.println("Invalid credit card number. Must be at least 9 characters in length. Please try again.");
-                reinputRequir = true;
-                invalidInput = true;
-            }
-            else{
-                if (CCValidityKey.charAt(keyLen) != 0){
-                    System.out.println("Invalid credit card number. Please try again.");
-                    reinputRequir = true;
-                    invalidInput = true;
-                }
-                else{
-                    reinputRequir = false;
-                    invalidInput = true;
-                }
-            }
-        }while(invalidInput = false);
-        
-    }
-
-    public static void generateCustomerDataFile(){
-    }
-
-    public static String reverseDigits(String creditCardNum){
-        String oriD, newD, reversedNum;
-        int len = creditCardNum.length();
-
-        char oriDigit = creditCardNum.charAt(0);
-        oriDigit = creditCardNum.charAt(len-1);
-        oriD = String.valueOf(oriDigit);
-
-        reversedNum = oriD;
-        
-        for (int i = (len - 2); i > 0; i--){
-            char newDigit = creditCardNum.charAt(i);
-            newD = String.valueOf(newDigit);
-            reversedNum += newD;
-        }
-        creditCardNum = reversedNum;
-        return creditCardNum;
-    }
-
-    public static String sumOdd(String sum1){
-        int sum = 0;
-        for (int i = 0; i < (sum1.length()-1); i++){
-            char digit = sum1.charAt(i);
-            int unknownDigit = Integer.valueOf(digit);
-            if (unknownDigit %2 != 0){
-                sum += unknownDigit;
-            }
-        }
-        sum1 = String.valueOf(sum);
-        return sum1;
-    }
-
-    public static String sumEven(String sum2){
-        int sum = 0;
-        for (int i = 0; i< (sum2.length()-1); i++){
+        // find for odd and even digits & caculate the partial sum
+        for (int i = 0; i< len; i++){
             if (i % 2 != 0){
-                char digit = sum2.charAt(i);
-                int evenDigit = Integer.valueOf(digit);
-                sum += evenDigit * 2;
-
-                if (sum > 9){
-                    sum -= evenDigit * 2;
+                int evenDigit = Character.getNumericValue(reversedNum.charAt(i));
+                sum2 += evenDigit * 2;
+                if (sum2 > 9){
+                    sum2 -= evenDigit * 2;
                     int unit = (evenDigit * 2) % 10;
                     int decade = (evenDigit * 2 - unit) / 10;
                     evenDigit = unit + decade;
-                    sum += evenDigit;
+                    sum2 += evenDigit;
                 }
             }
+            else{
+                int oddDigit = Character.getNumericValue(reversedNum.charAt(i));
+                sum1 += oddDigit;
+            }
         }
-        sum2 = String.valueOf(sum);
-        return sum2;
+
+        // add sum1 and sum2 to check the validity of the original number
+        int sum = sum1 + sum2;
+        String CCValidityKey = String.valueOf(sum); 
+        int keyLen = CCValidityKey.length();
+        int key = Character.getNumericValue(CCValidityKey.charAt(keyLen-1));
+
+        // to check if the sum ends in zero
+        if (key != 0){
+            System.out.println("Invalid credit card number. Please try again.");
+            return true;
+        }
+        else{
+            System.out.println();
+            System.out.println("Please wait for the system to upload your personal information.");
+            return false;
+        }
+    }
+
+    public static void generateCustomerDataFile(){
     }
 }
