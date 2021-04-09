@@ -1,14 +1,10 @@
-/*
- * Date: Apr 2, 2021
- * Name: Yuyang Liu, Carter Li
- * Teacher: Mr. Ho
- * Description: To setup the customer information and sales analysis system for a retail company
-*/
-
 import java.util.Scanner;
-
-public class CustomerSystem {
-    public static void main(String[] args){
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+class CustomerSystem{
+    public static void main(String[] args) throws FileNotFoundException {
         // Please do not edit any of these variables
         Scanner reader = new Scanner(System.in);
         String userInput, enterCustomerOption, generateCustomerOption, exitCondition;
@@ -18,16 +14,18 @@ public class CustomerSystem {
 
         // More variables for the main may be declared in the space below
 
+
         do{
             printMenu();                                    // Printing out the main menu
             userInput = reader.nextLine();                  // User selection from the menu
 
             if (userInput.equals(enterCustomerOption)){
-                String generalInfo = "blank";
-                System.out.println(enterCustomerInfo(generalInfo));
+                
+		        // Any necessary variables may be added to this if section, but nowhere else in the code
+                enterCustomerInfo();
             }
             else if (userInput.equals(generateCustomerOption)) {
-                // Only the line below may be editted based on the parameter list and how you design the method return
+                System.out.println("Now creating a data file for customer.");
                 generateCustomerDataFile();
             }
             else{
@@ -49,152 +47,85 @@ public class CustomerSystem {
         .concat("Enter menu option (1-9)\n")
         );
     }
-
     /*
-     * Description: stores customers information into the system
-     * 
-     * @param generalInfo
+    * This method may be edited to achieve the task however you like.
+    * The method may not nesessarily be a void return type
+    * This method may also be broken down further depending on your algorithm
     */
-    public static String enterCustomerInfo(String generalInfo) {
-        Scanner readCustomerInfo = new Scanner(System.in);
-        String firstName, lastName, city;
-        String postalCode = "blank", creditCardNum = "blank";  // initialize the variables
-
-        System.out.print("First Name: ");
-        firstName = readCustomerInfo.nextLine();
-        System.out.println();
-
-        System.out.print("Last Name: ");
-        lastName = readCustomerInfo.nextLine();
-        System.out.println();
-
-        System.out.print("City: ");
-        city = readCustomerInfo.nextLine();
-        System.out.println();
-/*
-        boolean PCValidityCheck = true;
-        while(PCValidityCheck = true){
-            System.out.print("Postal Code: ");
-            postalCode = readCustomerInfo.nextLine();
-            System.out.println();
-            validatePostalCode();
-        }
-*/
-
-        boolean reinputRequir = true;
-        while(reinputRequir = true){
-            System.out.print("Credit Card Number: ");
-            creditCardNum = readCustomerInfo.nextLine();
-            System.out.println();
-            validateCreditCard(creditCardNum, reinputRequir);
-        }
-
-        String space = " ";
-        generalInfo = firstName + space + lastName + space + city + space + postalCode + space + creditCardNum;
-
-        readCustomerInfo.close();
-        return generalInfo;
+    public static void enterCustomerInfo() {
     }
-
-    public static void validatePostalCode(){
-
-    }
-
-    public static void validateCreditCard(String creditCardNum, boolean reinputRequir){
-        boolean invalidInput = false;
-        int len = creditCardNum.length();
-
-        // reverse the order of the digits
-        String reversedCardNum = reverseDigits(creditCardNum);
-
-        // sum odd digits
-        String sum1 = reversedCardNum;
-        sum1 = sumOdd(sum1);
-
-        // double and sum the even digits
-        String sum2 = reversedCardNum;
-        sum2 = sumEven(sum2);
-
-        // add sum1 and sum2 to check the validity of the original number
-        int sum = Integer.parseInt(sum1) + Integer.parseInt(sum2);
-        String CCValidityKey = String.valueOf(sum);
-        int keyLen = CCValidityKey.length();
-
-
-        do{
-            if(len < 9){
-                System.out.println("Invalid credit card number. Must be at least 9 characters in length. Please try again.");
-                reinputRequir = true;
-                invalidInput = true;
-            }
-            else{
-                if (CCValidityKey.charAt(keyLen) != 0){
-                    System.out.println("Invalid credit card number. Please try again.");
-                    reinputRequir = true;
-                    invalidInput = true;
-                }
-                else{
-                    reinputRequir = false;
-                    invalidInput = true;
-                }
-            }
-        }while(invalidInput = false);
+    /*
+    * This method may be edited to achieve the task however you like.
+    * The method may not nesessarily be a void return type
+    * This method may also be broken down further depending on your algorithm
+    */
+    public static void validatePostalCode(String postal) {
         
-    }
+        Path path = path.get(C:/User/Carter/Download/postal_code.csv);
+        BufferedReader reader = new BufferedReader(path);
+        boolean valid = false;
 
-    public static void generateCustomerDataFile(){
-    }
+        for (int i = 0; i < postal.length(); i++){
 
-    public static String reverseDigits(String creditCardNum){
-        String oriD, newD, reversedNum;
-        int len = creditCardNum.length();
-
-        char oriDigit = creditCardNum.charAt(0);
-        oriDigit = creditCardNum.charAt(len-1);
-        oriD = String.valueOf(oriDigit);
-
-        reversedNum = oriD;
-        
-        for (int i = (len - 2); i > 0; i--){
-            char newDigit = creditCardNum.charAt(i);
-            newD = String.valueOf(newDigit);
-            reversedNum += newD;
-        }
-        creditCardNum = reversedNum;
-        return creditCardNum;
-    }
-
-    public static String sumOdd(String sum1){
-        int sum = 0;
-        for (int i = 0; i < (sum1.length()-1); i++){
-            char digit = sum1.charAt(i);
-            int unknownDigit = Integer.valueOf(digit);
-            if (unknownDigit %2 != 0){
-                sum += unknownDigit;
-            }
-        }
-        sum1 = String.valueOf(sum);
-        return sum1;
-    }
-
-    public static String sumEven(String sum2){
-        int sum = 0;
-        for (int i = 0; i< (sum2.length()-1); i++){
-            if (i % 2 != 0){
-                char digit = sum2.charAt(i);
-                int evenDigit = Integer.valueOf(digit);
-                sum += evenDigit * 2;
-
-                if (sum > 9){
-                    sum -= evenDigit * 2;
-                    int unit = (evenDigit * 2) % 10;
-                    int decade = (evenDigit * 2 - unit) / 10;
-                    evenDigit = unit + decade;
-                    sum += evenDigit;
+            if (i == 0 || i == 2 || i == 5){
+                if (postal.charAt(i) >= 65 && postal.charAt(i) <= 90){
+                    
                 }
+                else
+                    valid = true;
+
+            }    
+            if(i == 1 || i == 4 || i == 6){
+                if (postal.charAt(i) >= 48 && postal.charAt(i) <= 57){
+                    
+
+                }
+                else
+                    valid = true;
             }
         }
-        sum2 = String.valueOf(sum);
-        return sum2;
+        if (valid == true){
+            System.out.println("Your postal code is not valid. Please try again.");
+
+        }
+        else if (valid == path){
+            System.out.println("Your postal code is not valid. Please try again.");
+        }
+        else
+            System.out.println("That code is valid!");
     }
+    /*
+    * This method may be edited to achieve the task however you like.
+    * The method may not nesessarily be a void return type
+    * This method may also be broken down further depending on your algorithm
+    */
+    public static void generateCustomerDataFile() throws FileNotFoundException {
+        
+        // All the varible I used in this program.
+        Scanner in = new Scanner(System.in);
+        File file1 = new File("Customerdata.txt");
+        PrintWriter file2 = new PrintWriter(file1);
+        
+        // While looping the file until it was done.
+        while(in.hasNextLine()){
+            String line = in.nextLine();
+            file2.println("First Name:" + line);
+            file2.println("Last Name:" + line);
+            file2.println("city:" + line);
+            file2.println("Address:" + line);
+            file2.println("Postal Code:" + line);
+            file2.println("Card Num:" + line);
+        }  
+        // A program to avoid an existing file.
+        if (file1.exists()){
+            System.out.println("File already exists, ok to overwrite (y/n)? ");
+            if (!in.nextLine().startsWith("y")){
+              return;
+            } 
+        }
+        // Close the System.
+        System.out.println("All the data are done");
+        file2.close();
+    }
+
 }
